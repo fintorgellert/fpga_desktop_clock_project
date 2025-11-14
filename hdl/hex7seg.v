@@ -1,5 +1,29 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: hex7seg
+//
+// Description:
+// This module drives an 8-digit, 7-segment display. It takes a 32-bit hex
+// value and displays it across the eight digits. The module handles the
+// multiplexing of the digits and the conversion from a 4-bit hex value to
+// the corresponding 7-segment display pattern. It also controls the decimal
+// points, enabling them for specific digits.
+//
+// Inputs:
+//   val:   A 32-bit value to be displayed, where each 4-bit nibble corresponds
+//          to one digit on the display.
+//   cclk:  The clock signal for multiplexing the display.
+//   rst:   Reset signal.
+//
+// Outputs:
+//   seg:   An 8-bit output that drives the segments of the display (a-g and dp).
+//   dig:   An 8-bit one-hot encoded output that selects which of the eight digits
+//          is currently active.
+//
+//********************************************************************************//
+
 module hex7seg(
     input [31:0] val,
     input cclk, rst,

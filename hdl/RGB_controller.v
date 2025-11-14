@@ -1,5 +1,31 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: RGB_controller
+//
+// Description:
+// This module controls two RGB LEDs to provide visual feedback for an alarm
+// system. It generates different lighting patterns (off, fading, blinking)
+// based on the input alarm state. The color brightness is controlled using
+// Pulse-Width Modulation (PWM).
+//
+// Parameters:
+//   MAX_BRIGHTNESS: Sets the peak brightness for the fading effect.
+//
+// Inputs:
+//   GCLK:           Global clock signal (100MHz).
+//   alarm_state_in: A 4-bit input that determines the alarm's current state:
+//                   - ALARM_IDLE_MODE: LEDs are off.
+//                   - ALARM_ACTIVE_MODE: LEDs fade through a color spectrum.
+//                   - ALARM_WAKE_MODE: LEDs blink red.
+//
+// Outputs:
+//   RGB_LED_1_O:    A 3-bit output to control the RGB channels of the first LED.
+//   RGB_LED_2_O:    A 3-bit output to control the RGB channels of the second LED.
+//
+//********************************************************************************//
+
 module RGB_controller (
         input  GCLK,  
         input  [3:0] alarm_state_in,  

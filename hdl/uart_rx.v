@@ -1,5 +1,33 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: uart_rx
+//
+// Description:
+// This module implements a Universal Asynchronous Receiver-Transmitter (UART)
+// receiver. It is designed to be highly configurable, with parameters for the
+// clock frequency and baud rate. The receiver uses oversampling to reliably
+// detect the start bit and sample the data bits. It performs basic error
+// checking for the stop bit.
+//
+// Parameters:
+//   CLK_FREQ:  The frequency of the input clock in Hz.
+//   BAUD_RATE: The desired baud rate for the UART communication.
+//
+// Inputs:
+//   clk:       The system clock.
+//   rst:       Reset signal.
+//   rx_in:     The serial data input line from the UART bus.
+//
+// Outputs:
+//   rx_data:   The 8-bit received data byte.
+//   rx_done:   A single-cycle pulse indicating that a byte has been successfully
+//              received.
+//   rx_error:  A flag that indicates a framing error (invalid stop bit).
+//
+//********************************************************************************//
+
 module uart_rx #(
             parameter CLK_FREQ = 100_000_000,
             parameter BAUD_RATE = 9600

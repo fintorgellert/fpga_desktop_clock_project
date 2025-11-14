@@ -1,5 +1,32 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: uart_tx
+//
+// Description:
+// This module implements a Universal Asynchronous Receiver-Transmitter (UART)
+// transmitter. It is designed to be configurable with parameters for the
+// clock frequency and baud rate. When a start signal is received, the module
+// serializes an 8-bit data word and transmits it over the `tx` line, complete
+// with start and stop bits.
+//
+// Parameters:
+//   CLK_FREQ:  The frequency of the input clock in Hz.
+//   BAUD_RATE: The desired baud rate for the UART communication.
+//
+// Inputs:
+//   clk:       The system clock.
+//   rst:       Reset signal.
+//   tx_start:  A single-cycle pulse that initiates the transmission of `tx_data`.
+//   tx_data:   The 8-bit data byte to be transmitted.
+//
+// Outputs:
+//   tx_busy:   A flag that is high while a transmission is in progress.
+//   tx:        The serial data output line.
+//
+//********************************************************************************//
+
 module uart_tx #(
         parameter CLK_FREQ = 100_000_000, 
         parameter BAUD_RATE = 9600         
