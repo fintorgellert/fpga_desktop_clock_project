@@ -1,25 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 04.10.2025 21:36:00
-// Design Name: 
-// Module Name: time_core
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
-//// File: time_core.v
 module time_core(
         input clk,
         input rst,
@@ -38,18 +18,16 @@ module time_core(
     );
     
     wire [5:0] sec, min, l;
-    wire [4:0] hour; // 5 bit az órának (0-23)
-    wire [3:0] month; // 4 bit a hónapnak (1-12)
+    wire [4:0] hour; 
+    wire [3:0] month; 
     wire [31:0] hex;
     wire [7:0] seg, dig;
     wire day_ce, hour_ce, min_ce, sec_ce;
     wire [3:0] mot, mou, dt, du, ht, hu, mit, miu;
       
-    // 1Hz engedély jel
     wire ce;
     rategen rategenerator(.clk(clk), .rst(rst), .cy(ce));
-    
-    // másodperc számláló 0-59, alaphelyzet 0
+
     bcd_unit_counter #(0, 59, 0) counter_sec (
         .clk(clk), 
         .rst(rst), 
@@ -60,8 +38,6 @@ module time_core(
         .cout(sec_ce)
     );
     
-    
-    // perc számláló 0-59, alaphelyzet 20
     bcd_unit_counter #(0, 59, 20) counter_min (
         .clk(clk), 
         .rst(rst), 
@@ -72,20 +48,16 @@ module time_core(
         .cout(min_ce)
     );        
         
-        
-    // óra számláló 0-23, alaphelyzet 4
    bcd_unit_counter #(0, 23, 4) counter_hour (
         .clk(clk), 
         .rst(rst), 
         .ce(ce&sec_ce&min_ce),
         .load_en(load_settings),
-        .load_data({1'b0, load_hour}), // 5 bit a 6 bites portra
+        .load_data({1'b0, load_hour}),
         .q(hour), 
         .cout(hour_ce)
     );
   
-    
-    // nap számláló 1-31 hónaptól függ, alaphelyzet 17
     day_counter day_counter (
         .clk(clk),
         .rst(rst),
@@ -99,20 +71,17 @@ module time_core(
         .cout(day_ce)
     );
     
-    
-    // hónap számláló 1-12, alaphelyzet 8
      bcd_unit_counter #(1, 12, 8) counter_month (
         .clk(clk), 
         .rst(rst), 
         .ce(ce&sec_ce&min_ce&hour_ce&day_ce),
         .load_en(load_settings),
-        .load_data({2'b0, load_month}), // 4 bit a 6 bites portra
+        .load_data({2'b0, load_month}), 
         .q(month), 
         .cout()
     );
     
     
-    // kijelzõ meghajtó
     hex7seg segdecoder ( 
         .val(hex), 
         .cclk(clk), 
@@ -121,14 +90,12 @@ module time_core(
         .dig(dig)
     );
     
-    // led kapcsolás
     hexled seconds_display (
         .val(sec),
         .rst(rst),
         .led(l)    
     );
     
-    // segmensek létrehozása számokból, tízesekre és egyesekre bontás
     assign miu = min % 10;
     assign mit = min / 10;
     assign hu = hour % 10;
