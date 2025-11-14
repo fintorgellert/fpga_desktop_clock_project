@@ -1,5 +1,33 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: day_counter
+//
+// Description:
+// This module is a specialized BCD counter for tracking the days of the month.
+// It correctly handles the varying number of days in each month (30 or 31),
+// although it does not account for leap years (February is fixed at 28 days).
+// The counter can be preset with a specific day.
+//
+// Inputs:
+//   clk:         Clock signal.
+//   rst:         Asynchronous reset signal.
+//   ce:          Clock enable; the counter increments on the rising edge of clk
+//                when ce is high.
+//   month_tens:  The tens digit of the current month.
+//   month_units: The units digit of the current month.
+//   load_en:     Enables synchronous loading of `load_day`.
+//   load_day:    5-bit value to be loaded as the current day.
+//
+// Outputs:
+//   du:          The units digit of the current day.
+//   dt:          The tens digit of the current day.
+//   cout:        Carry out; asserted for one clock cycle when the counter
+//                rolls over to the next month.
+//
+//********************************************************************************//
+
 module day_counter(
         input clk,
         input rst,

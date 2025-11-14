@@ -24,12 +24,23 @@ VALID_TYPES = {TYPE_SECOND, TYPE_MINUTE, TYPE_HOUR, TYPE_DAY, TYPE_MONTH}
 
 
 class FpgaClockApp:
+    """A Tkinter application for monitoring and setting an FPGA-based clock.
+
+    This class encapsulates the entire functionality of the GUI application,
+    including serial communication with the FPGA, displaying the time and date,
+    and providing a user interface for setting the time and an alarm.
+    """
     MONTH_NAMES = {
         1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June",
         7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December"
     }
 
     def __init__(self, master):
+        """Initializes the FpgaClockApp.
+
+        Args:
+            master: The root Tkinter window.
+        """
         self.master = master
         master.title("FPGA Clock Monitor & Setter")
         master.geometry("800x600")
@@ -78,6 +89,7 @@ class FpgaClockApp:
         master.geometry("1024x720")
 
     def create_styles(self):
+        """Creates and configures the ttk styles for the application."""
         style = ttk.Style()
         self.master.config(bg="#1E1E1E")
         style.theme_use('default')
@@ -103,12 +115,18 @@ class FpgaClockApp:
         style.map('Return.TButton', background=[('active', '#34495e')])
 
     def show_frame(self, frame_to_show):
+        """Shows the specified frame and hides the others.
+
+        Args:
+            frame_to_show: The Tkinter frame to be displayed.
+        """
         self.main_frame.pack_forget()
         self.setting_frame.pack_forget()
         frame_to_show.pack(fill='both', expand=True)
 
 
     def open_serial_port(self):
+        """Opens the serial port and starts the reader thread."""
         try:
             ports = [p.device for p in serial.tools.list_ports.comports()]
             if COM_PORT not in ports:
@@ -127,6 +145,7 @@ class FpgaClockApp:
             messagebox.showerror("Serial Error", err)
 
     def serial_reader_loop(self):
+        """Continuously reads from the serial port in a separate thread."""
         BUFFER = b''
         while self.running and self.is_serial_open:
             if self.is_setting_mode:
@@ -160,6 +179,7 @@ class FpgaClockApp:
             time.sleep(0.005)
 
     def check_serial_queue(self):
+        """Checks the serial queue for new data and updates the display."""
         data_processed = False
         while not self.serial_queue.empty():
             try:
@@ -176,6 +196,11 @@ class FpgaClockApp:
         self.master.after(50, self.check_serial_queue)
 
     def create_main_monitor(self, frame):
+        """Creates the main monitor frame with the time and date display.
+
+        Args:
+            frame: The parent Tkinter frame.
+        """
         frame.config(bg="#1E1E1E", padx=20, pady=20)
         tk.Label(frame, text="FPGA Time Display", font=("Inter", 18, "bold"), bg="#1E1E1E", fg="#ecf0f1").pack(
             pady=(10, 5))
@@ -195,6 +220,11 @@ class FpgaClockApp:
             side=tk.BOTTOM, fill='x', pady=10)
 
     def create_settings_panel(self, frame):
+        """Creates the settings panel with options for setting the time and alarm.
+
+        Args:
+            frame: The parent Tkinter frame.
+        """
         frame.config(bg="#1E1E1E", padx=20, pady=20)
 
         header_frame = tk.Frame(frame, bg="#1E1E1E")
@@ -272,6 +302,11 @@ class FpgaClockApp:
             return False 
 
     def create_manual_settings(self, frame):
+        """Creates the widgets for manually setting the time.
+
+        Args:
+            frame: The parent Tkinter frame.
+        """
         self.m_month = tk.IntVar(value=self.time_data.get(TYPE_MONTH, 1))
         self.m_day = tk.IntVar(value=self.time_data.get(TYPE_DAY, 1))
         self.m_hour = tk.IntVar(value=self.time_data.get(TYPE_HOUR, 0))
@@ -313,6 +348,11 @@ class FpgaClockApp:
 
 
     def create_auto_settings(self, frame):
+        """Creates the widgets for automatically syncing the time with the PC.
+
+        Args:
+            frame: The parent Tkinter frame.
+        """
         content_frame = tk.Frame(frame, bg="#2c3e50")
         content_frame.pack(expand=True, fill='both')
 
@@ -329,6 +369,11 @@ class FpgaClockApp:
         self.update_pc_time_display()
 
     def create_alarm_settings(self, frame):
+        """Creates the widgets for setting the alarm.
+
+        Args:
+            frame: The parent Tkinter frame.
+        """
         grid_frame = tk.Frame(frame, bg="#2c3e50")
         grid_frame.pack(fill='x', pady=(0, 20))
 
@@ -364,9 +409,18 @@ class FpgaClockApp:
                  bg="#2c3e50", fg="#95a5a6", font=('Inter', 9, 'italic')).pack(pady=(10, 0), anchor='w')
 
     def get_month_name(self, month_num):
+        """Returns the name of the month for a given month number.
+
+        Args:
+            month_num: The number of the month (1-12).
+
+        Returns:
+            The name of the month as a string.
+        """
         return self.MONTH_NAMES.get(month_num, "Invalid Month")
 
     def update_display(self):
+        """Updates the time and date display with the latest data."""
         month = self.time_data.get(TYPE_MONTH, 0)
         day = self.time_data.get(TYPE_DAY, 0)
         hour = self.time_data.get(TYPE_HOUR, 0)
@@ -383,12 +437,21 @@ class FpgaClockApp:
             self.date_str.set("-- --")
 
     def get_max_day(self, month):
+        """Gets the maximum number of days for a given month.
+
+        Args:
+            month: The month (1-12).
+
+        Returns:
+            The number of days in the month.
+        """
         try:
             return calendar.monthrange(self.current_year, month)[1]
         except ValueError:
             return 31
 
     def update_max_day(self, *args):
+        """Updates the maximum day of the month in the day spinbox."""
         try:
             month = self.m_month.get()
             if 1 <= month <= 12:
@@ -400,6 +463,7 @@ class FpgaClockApp:
             pass
 
     def enter_settings(self):
+        """Enters the settings mode."""
         if not self.is_serial_open:
             messagebox.showerror("Serial Error", "Cannot enter settings: Serial port is not open.")
             return
@@ -418,11 +482,18 @@ class FpgaClockApp:
         self.status_str.set("In Settings Mode: UART RX paused.")
 
     def exit_settings(self):
+        """Exits the settings mode."""
         self.is_setting_mode = False
         self.show_frame(self.main_frame)
         self.status_str.set("Main Monitor: UART RX resumed.")
 
     def set_clock_handler(self, manual=True):
+        """Handles the logic for setting the clock, either manually or automatically.
+
+        Args:
+            manual: A boolean indicating whether to set the time manually (True) or
+                sync with the PC (False).
+        """
         if manual:
             try:
                 month = self.m_month.get()
@@ -448,6 +519,15 @@ class FpgaClockApp:
         self.exit_settings()
 
     def send_clock_data(self, month, day, hour, minute, second):
+        """Sends the clock data to the FPGA via the serial port.
+
+        Args:
+            month: The month to set.
+            day: The day to set.
+            hour: The hour to set.
+            minute: The minute to set.
+            second: The second to set.
+        """
         if not self.is_serial_open:
             messagebox.showerror("Serial Error", "Serial port is not open.")
             return
@@ -463,6 +543,7 @@ class FpgaClockApp:
             self.status_str.set(f"Error sending data: {e}")
 
     def set_alarm_handler(self):
+        """Handles the logic for setting the alarm."""
         if not self.is_serial_open:
             messagebox.showerror("Serial Error", "Serial port is not open.")
             return
@@ -482,6 +563,13 @@ class FpgaClockApp:
         self.exit_settings()
 
     def send_alarm_data(self, hour, minute, enabled):
+        """Sends the alarm data to the FPGA via the serial port.
+
+        Args:
+            hour: The alarm hour to set.
+            minute: The alarm minute to set.
+            enabled: A boolean indicating whether the alarm is enabled.
+        """
         data = [0xBB, hour, minute]
         status_alarm = f"{hour:02d}:{minute:02d} | {'Enabled' if enabled else 'Disabled'}"
         try:
@@ -493,6 +581,7 @@ class FpgaClockApp:
             self.status_str.set(f"Error sending alarm data: {e}")
 
     def update_pc_time_display(self):
+        """Updates the display of the PC's current time."""
         now = datetime.now()
         month_name = self.get_month_name(now.month)
         date_part = f"{month_name} {now.day:02d}"
@@ -502,6 +591,7 @@ class FpgaClockApp:
         self.master.after(1000, self.update_pc_time_display)
 
     def on_closing(self):
+        """Handles the closing of the application window."""
         self.running = False
         if self.read_thread and self.read_thread.is_alive():
             self.read_thread.join(timeout=0.05)

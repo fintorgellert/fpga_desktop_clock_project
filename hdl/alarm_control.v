@@ -1,5 +1,42 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: alarm_control
+//
+// Description:
+// This module implements the logic for setting, managing, and displaying an
+// alarm. It features a state machine to handle different modes of operation,
+// including setting the alarm time via switches or UART, monitoring the
+// current time to trigger the alarm, and controlling visual feedback through
+// 7-segment displays and RGB LEDs.
+//
+// Inputs:
+//   clk:                Global clock signal.
+//   rst:                Global reset signal.
+//   ent:                Enter button press signal.
+//   ret:                Return button press signal.
+//   bstep:              Backstep button press signal.
+//   uart_alarm_hour:    Hour value for the alarm, received via UART.
+//   uart_alarm_minute:  Minute value for the alarm, received via UART.
+//   is_uart_set:        A flag indicating that a new alarm time has been
+//                       received via UART.
+//   sw:                 6-bit input from slide switches, used for setting
+//                       the alarm time manually.
+//   actual_hour:        Current hour from the main timekeeping module.
+//   actual_min:         Current minute from the main timekeeping module.
+//   actual_sec:         Current second from the main timekeeping module.
+//
+// Outputs:
+//   segm:               8-bit output for the 7-segment display segments.
+//   dign:               8-bit output for controlling the 7-segment display digits.
+//   alm_set_done:       Indicates that the alarm has been successfully set.
+//   is_alarm_going_off: Indicates that the alarm is currently triggered.
+//   rgb_led_1:          3-bit output for the first RGB LED.
+//   rgb_led_2:          3-bit output for the second RGB LED.
+//
+//********************************************************************************//
+
 module alarm_control(
         input clk,
         input rst, ent, ret, bstep,

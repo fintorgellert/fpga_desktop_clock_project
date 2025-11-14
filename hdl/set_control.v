@@ -1,5 +1,38 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: set_control
+//
+// Description:
+// This module provides the logic for setting the date and time of the clock.
+// It uses a state machine to cycle through the different fields (month, day,
+// hour, minute, second), allowing the user to set each one using slide switches
+// and push-buttons. The current setting is displayed on the 7-segment display,
+// with the active field blinking.
+//
+// Inputs:
+//   clk:                Global clock signal.
+//   rst:                Reset signal.
+//   ent:                Enter button press signal to confirm a setting.
+//   ret:                Return button press signal to exit setting mode.
+//   bstep:              Backstep button press signal to go to the previous setting.
+//   is_alarm_going_off: A flag indicating if the alarm is currently active.
+//   sw:                 6-bit input from slide switches for setting values.
+//
+// Outputs:
+//   segm:               8-bit output for the 7-segment display segments.
+//   dign:               8-bit output for controlling the 7-segment display digits.
+//   led:                6-bit output for LEDs, used to display seconds.
+//   set_done:           A pulse indicating that the time setting is complete.
+//   out_sec:            The final second value after setting.
+//   out_min:            The final minute value after setting.
+//   out_hour:           The final hour value after setting.
+//   out_day:            The final day value after setting.
+//   out_month:          The final month value after setting.
+//
+//********************************************************************************//
+
 module set_control(
         input clk,
         input rst, ent, ret, bstep,

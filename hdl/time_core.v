@@ -1,5 +1,38 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: time_core
+//
+// Description:
+// This module is the core of the clock's timekeeping functionality. It
+// instantiates and connects a series of counters for seconds, minutes, hours,
+// days, and months. A 1 Hz signal is generated from the main clock to drive
+// the counters. The module supports loading a new time and date, and it
+// outputs the current time for display and for the alarm logic.
+//
+// Inputs:
+//   clk:           Global clock signal (100MHz).
+//   rst:           Global reset signal.
+//   load_settings: A flag to enable loading of new time and date values.
+//   load_sec:      The second value to load.
+//   load_min:      The minute value to load.
+//   load_hour:     The hour value to load.
+//   load_day:      The day value to load.
+//   load_month:    The month value to load.
+//
+// Outputs:
+//   actual_month:  The current month.
+//   actual_day:    The current day.
+//   actual_hour:   The current hour.
+//   actual_min:    The current minute.
+//   actual_sec:    The current second.
+//   segm:          8-bit output for the 7-segment display segments.
+//   dign:          8-bit output for controlling the 7-segment display digits.
+//   led:           6-bit output for LEDs, used to display seconds.
+//
+//********************************************************************************//
+
 module time_core(
         input clk,
         input rst,

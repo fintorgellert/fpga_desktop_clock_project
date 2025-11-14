@@ -1,5 +1,37 @@
 `timescale 1ns / 1ps
 
+//********************************************************************************//
+//
+// Module: clock_project_top
+//
+// Description:
+// This is the top-level module for the FPGA desktop clock project. It integrates
+// all the necessary sub-modules, including the timekeeping core, alarm control,
+// settings control, and UART communication, to create a fully functional clock.
+// The module manages the overall system state, multiplexes the 7-segment
+// display, and handles user input from buttons and UART.
+//
+// Inputs:
+//   CLK100MHZ:      100MHz global clock signal.
+//   btn_rst:        Master reset button.
+//   btn_set:        Button to enter time-setting mode.
+//   btn_alm:        Button to enter alarm-setting mode.
+//   btn_ent:        Enter/confirm button.
+//   btn_ret:        Return/exit button.
+//   btn_bstep:      Backstep button for settings navigation.
+//   SW:             6-bit input from slide switches.
+//   rx:             UART receive line.
+//
+// Outputs:
+//   tx:             UART transmit line.
+//   a_to_g:         8-bit output for 7-segment display segments.
+//   an:             8-bit output for 7-segment display anodes.
+//   LED:            6-bit output for general-purpose LEDs.
+//   I_RGB_LED:      3-bit output for the first RGB LED.
+//   II_RGB_LED:     3-bit output for the second RGB LED.
+//
+//********************************************************************************//
+
 module clock_project_top (
         input CLK100MHZ, 
         input btn_rst, btn_set, btn_alm, btn_ent, btn_ret, btn_bstep,
