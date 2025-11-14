@@ -1,26 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 03.10.2025 16:07:13
-// Design Name: 
-// Module Name: bcd_unit_counter
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
-
-// File: bcd_unit_counter.v
 module bcd_unit_counter #(
         parameter R = 0, N = 59, D = 0
     ) (
