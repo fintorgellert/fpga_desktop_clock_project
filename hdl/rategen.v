@@ -1,5 +1,20 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: rategen
+ * ---------------
+ * Purpose:
+ *   Rate generator / Clock divider.
+ *   Generates a 1Hz enable pulse from the 100MHz system clock.
+ *   Used to drive the seconds counter in the time core.
+ *
+ * Inputs:
+ *   - clk : 100MHz System clock.
+ *   - rst : Reset signal.
+ *
+ * Outputs:
+ *   - cy  : One-cycle high pulse every 1 second (100,000,000 clock cycles).
+ */
 module rategen(
         input clk, rst,  
         output cy

@@ -1,5 +1,34 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: alarm_control
+ * ---------------------
+ * Purpose:
+ *   Manages the Alarm Mode of the clock.
+ *   Handles setting the alarm time (Hour, Minute) via buttons or UART.
+ *   Compares the current time with the alarm time and triggers the alarm.
+ *   Controls the 7-segment display and RGB LEDs during alarm configuration and activation.
+ *
+ * Inputs:
+ *   - clk               : System clock.
+ *   - rst               : Reset signal.
+ *   - ent, ret, bstep   : Control buttons (Enter, Return, Back-step).
+ *   - uart_alarm_hour   : Alarm hour received via UART.
+ *   - uart_alarm_minute : Alarm minute received via UART.
+ *   - is_uart_set       : Flag indicating if alarm was set via UART.
+ *   - sw                : Switches for setting time values manually.
+ *   - actual_hour       : Current clock hour.
+ *   - actual_min        : Current clock minute.
+ *   - actual_sec        : Current clock second.
+ *
+ * Outputs:
+ *   - segm              : 7-segment display segments.
+ *   - dign              : 7-segment display digits (anodes).
+ *   - alm_set_done      : Flag indicating manual alarm setting is complete.
+ *   - is_alarm_going_off: Signal indicating the alarm is currently triggering.
+ *   - rgb_led_1         : Control for RGB LED 1.
+ *   - rgb_led_2         : Control for RGB LED 2.
+ */
 module alarm_control(
         input clk,
         input rst, ent, ret, bstep,

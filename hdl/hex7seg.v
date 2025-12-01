@@ -1,5 +1,23 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: hex7seg
+ * ---------------
+ * Purpose:
+ *   Multiplexed 7-segment display controller.
+ *   Takes a 32-bit value (interpreted as 8 nibbles/digits) and displays it on the
+ *   8-digit 7-segment display of the Nexys 4 DDR board.
+ *   It cycles through the digits at a high frequency to create the persistence of vision effect.
+ *
+ * Inputs:
+ *   - val  : 32-bit value to display (8 nibbles, each mapping to a digit).
+ *   - cclk : System clock.
+ *   - rst  : Reset signal.
+ *
+ * Outputs:
+ *   - seg  : 8-bit segment control (active low) [DP, g, f, e, d, c, b, a].
+ *   - dig  : 8-bit digit select (active high internally, usually inverted at top level).
+ */
 module hex7seg(
     input [31:0] val,
     input cclk, rst,

@@ -89,7 +89,11 @@ class FpgaClockApp:
         master.geometry("1024x720")
 
     def create_styles(self):
-        """Creates and configures the ttk styles for the application."""
+        """Creates and configures the ttk styles for the application.
+
+        This method defines custom styles for buttons, frames, and labels used
+        throughout the application to ensure a consistent dark theme.
+        """
         style = ttk.Style()
         self.master.config(bg="#1E1E1E")
         style.theme_use('default')
@@ -179,7 +183,12 @@ class FpgaClockApp:
             time.sleep(0.005)
 
     def check_serial_queue(self):
-        """Checks the serial queue for new data and updates the display."""
+        """Checks the serial queue for new data and updates the display.
+
+        This method is called periodically by the Tkinter main loop. It polls
+        the thread-safe queue for data received from the serial thread and
+        updates the application's internal time state.
+        """
         data_processed = False
         while not self.serial_queue.empty():
             try:
@@ -281,6 +290,21 @@ class FpgaClockApp:
                    style='Custom.TButton').pack(pady=(15, 5), fill='x')
 
     def _validate_int_wrapper(self, proposed_value, min_val, max_val):
+        """Validates that a user input string is an integer within a specified range.
+
+        This method is used as a wrapper for the Tkinter validation command.
+        It handles empty strings as valid (intermediate state) and checks
+        if the non-empty string is an integer between `min_val` and `max_val`.
+        It also handles dynamic day limits based on the selected month.
+
+        Args:
+            proposed_value: The string value currently in the entry widget.
+            min_val: The minimum allowed integer value (as a string or int).
+            max_val: The maximum allowed integer value (as a string or int).
+
+        Returns:
+            True if the input is valid (empty or within range), False otherwise.
+        """
         if not proposed_value:
             return True
 
@@ -420,7 +444,12 @@ class FpgaClockApp:
         return self.MONTH_NAMES.get(month_num, "Invalid Month")
 
     def update_display(self):
-        """Updates the time and date display with the latest data."""
+        """Updates the time and date display with the latest data.
+
+        Formats the current time and date stored in `self.time_data` and
+        updates the Tkinter StringVars (`self.time_str` and `self.date_str`)
+        bound to the UI labels.
+        """
         month = self.time_data.get(TYPE_MONTH, 0)
         day = self.time_data.get(TYPE_DAY, 0)
         hour = self.time_data.get(TYPE_HOUR, 0)
@@ -463,7 +492,12 @@ class FpgaClockApp:
             pass
 
     def enter_settings(self):
-        """Enters the settings mode."""
+        """Enters the settings mode.
+
+        Switches the UI to the settings panel and pauses the serial reader
+        (to prevent display updates while editing). Initializes the settings
+        fields with the current time values.
+        """
         if not self.is_serial_open:
             messagebox.showerror("Serial Error", "Cannot enter settings: Serial port is not open.")
             return
@@ -482,7 +516,10 @@ class FpgaClockApp:
         self.status_str.set("In Settings Mode: UART RX paused.")
 
     def exit_settings(self):
-        """Exits the settings mode."""
+        """Exits the settings mode.
+
+        Returns the UI to the main monitor view and resumes serial data processing.
+        """
         self.is_setting_mode = False
         self.show_frame(self.main_frame)
         self.status_str.set("Main Monitor: UART RX resumed.")
@@ -543,7 +580,11 @@ class FpgaClockApp:
             self.status_str.set(f"Error sending data: {e}")
 
     def set_alarm_handler(self):
-        """Handles the logic for setting the alarm."""
+        """Handles the logic for setting the alarm.
+
+        Validates the alarm hour and minute inputs. If valid, sends the
+        alarm configuration to the FPGA and returns to the main view.
+        """
         if not self.is_serial_open:
             messagebox.showerror("Serial Error", "Serial port is not open.")
             return
@@ -581,7 +622,11 @@ class FpgaClockApp:
             self.status_str.set(f"Error sending alarm data: {e}")
 
     def update_pc_time_display(self):
-        """Updates the display of the PC's current time."""
+        """Updates the display of the PC's current time.
+
+        Recursively calls itself every 1000ms to keep the "Current System Time"
+        label on the settings panel updated.
+        """
         now = datetime.now()
         month_name = self.get_month_name(now.month)
         date_part = f"{month_name} {now.day:02d}"
@@ -591,7 +636,11 @@ class FpgaClockApp:
         self.master.after(1000, self.update_pc_time_display)
 
     def on_closing(self):
-        """Handles the closing of the application window."""
+        """Handles the closing of the application window.
+
+        Stops the serial reader thread, closes the serial connection,
+        and destroys the Tkinter root window.
+        """
         self.running = False
         if self.read_thread and self.read_thread.is_alive():
             self.read_thread.join(timeout=0.05)

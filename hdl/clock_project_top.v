@@ -1,5 +1,34 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: clock_project_top
+ * -------------------------
+ * Purpose:
+ *   Top-level module for the FPGA Desktop Clock project.
+ *   This module integrates the time-keeping core, setting controls, alarm controls,
+ *   display drivers (7-segment and LEDs), and UART communication.
+ *   It manages the main state machine that switches between Clock Mode, Setting Mode,
+ *   and Alarm Mode based on user button inputs.
+ *
+ * Inputs:
+ *   - CLK100MHZ : 100 MHz system clock.
+ *   - btn_rst   : Reset button (Active Low).
+ *   - btn_set   : Button to enter Setting Mode.
+ *   - btn_alm   : Button to enter Alarm Mode.
+ *   - btn_ent   : Enter/Confirm button.
+ *   - btn_ret   : Return/Back button.
+ *   - btn_bstep : Back-step button (to go back one field in setting).
+ *   - SW        : 6-bit Switch input (used for value adjustment).
+ *   - rx        : UART Receive line.
+ *
+ * Outputs:
+ *   - tx        : UART Transmit line.
+ *   - a_to_g    : 7-segment display segment control (Active Low).
+ *   - an        : 7-segment display anode control (Active Low).
+ *   - LED       : LEDs for status indication (e.g., seconds binary).
+ *   - I_RGB_LED : RGB LED 1 control (Active High).
+ *   - II_RGB_LED: RGB LED 2 control (Active High).
+ */
 module clock_project_top (
         input CLK100MHZ, 
         input btn_rst, btn_set, btn_alm, btn_ent, btn_ret, btn_bstep,

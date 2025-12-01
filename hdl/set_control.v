@@ -1,5 +1,31 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: set_control
+ * -------------------
+ * Purpose:
+ *   Manages the Setting Mode of the clock (Manually setting the time).
+ *   Implements a state machine to cycle through setting Month, Day, Hour, Minute, and Second.
+ *   Validates input values (e.g., max days per month) and controls the display during setting.
+ *
+ * Inputs:
+ *   - clk               : System clock.
+ *   - rst               : Reset signal.
+ *   - ent, ret, bstep   : Control buttons (Enter, Return, Back-step).
+ *   - is_alarm_going_off: Signal to prevent entering setting mode if alarm is active.
+ *   - sw                : Switches for selecting values.
+ *
+ * Outputs:
+ *   - segm     : 7-segment display segments.
+ *   - dign     : 7-segment display digits.
+ *   - led      : LED output (used for seconds display/feedback).
+ *   - set_done : Flag indicating that the setting process is complete.
+ *   - out_sec  : The configured second value.
+ *   - out_min  : The configured minute value.
+ *   - out_hour : The configured hour value.
+ *   - out_day  : The configured day value.
+ *   - out_month: The configured month value.
+ */
 module set_control(
         input clk,
         input rst, ent, ret, bstep,

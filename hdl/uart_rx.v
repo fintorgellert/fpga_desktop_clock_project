@@ -1,5 +1,28 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: uart_rx
+ * ---------------
+ * Purpose:
+ *   UART Receiver module.
+ *   Receives a serial stream of bits on the `rx_in` line and converts it into
+ *   a parallel 8-bit byte. It uses 16x oversampling to detect the start bit
+ *   and sample data bits in the middle of their period for reliability.
+ *
+ * Parameters:
+ *   - CLK_FREQ : Frequency of the system clock in Hz (default: 100MHz).
+ *   - BAUD_RATE: Desired baud rate for UART communication (default: 9600).
+ *
+ * Inputs:
+ *   - clk    : System clock.
+ *   - rst    : Reset signal (Active High).
+ *   - rx_in  : Serial data input line.
+ *
+ * Outputs:
+ *   - rx_data: 8-bit parallel data received.
+ *   - rx_done: Pulses high for one clock cycle when a byte is successfully received.
+ *   - rx_error: Pulses high if a stop bit is not detected when expected (framing error).
+ */
 module uart_rx #(
             parameter CLK_FREQ = 100_000_000,
             parameter BAUD_RATE = 9600

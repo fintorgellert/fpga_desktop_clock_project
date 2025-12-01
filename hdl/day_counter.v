@@ -1,5 +1,27 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: day_counter
+ * -------------------
+ * Purpose:
+ *   Counts the days of the month.
+ *   Automatically adjusts the maximum number of days based on the current month.
+ *   (e.g., 30 for April, 31 for May, 28 for February - Leap year simplified/not implemented).
+ *
+ * Inputs:
+ *   - clk         : System clock.
+ *   - rst         : System reset.
+ *   - ce          : Clock enable (increment day).
+ *   - month_tens  : Tens digit of the current month.
+ *   - month_units : Units digit of the current month.
+ *   - load_en     : Enable loading a specific day.
+ *   - load_day    : The day value to load.
+ *
+ * Outputs:
+ *   - du  : Day units digit (0-9).
+ *   - dt  : Day tens digit (0-3).
+ *   - cout: Carry out signal (end of month).
+ */
 module day_counter(
         input clk,
         input rst,

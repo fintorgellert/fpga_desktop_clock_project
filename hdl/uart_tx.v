@@ -1,5 +1,27 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: uart_tx
+ * ---------------
+ * Purpose:
+ *   UART Transmitter module.
+ *   Converts a parallel 8-bit byte into a serial stream of bits to be sent
+ *   over the `tx` line. It adds a start bit and a stop bit to the data.
+ *
+ * Parameters:
+ *   - CLK_FREQ : Frequency of the system clock in Hz (default: 100MHz).
+ *   - BAUD_RATE: Desired baud rate for UART communication (default: 9600).
+ *
+ * Inputs:
+ *   - clk     : System clock.
+ *   - rst     : Reset signal (Active High).
+ *   - tx_start: Pulse high to initiate transmission of `tx_data`.
+ *   - tx_data : 8-bit parallel data to be transmitted.
+ *
+ * Outputs:
+ *   - tx_busy : High while transmission is in progress.
+ *   - tx      : Serial data output line.
+ */
 module uart_tx #(
         parameter CLK_FREQ = 100_000_000, 
         parameter BAUD_RATE = 9600         

@@ -1,5 +1,23 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: RGB_controller
+ * ----------------------
+ * Purpose:
+ *   Controls two RGB LEDs based on the current alarm state.
+ *   It supports three modes:
+ *     - IDLE: LEDs are off.
+ *     - ACTIVE (Fading): LEDs cycle through colors (fading effect).
+ *     - WAKE (Blinking): LEDs blink red.
+ *
+ * Inputs:
+ *   - GCLK          : Global system clock.
+ *   - alarm_state_in: The current state of the alarm (IDLE, ACTIVE, WAKE).
+ *
+ * Outputs:
+ *   - RGB_LED_1_O   : 3-bit control signal for RGB LED 1 (Red, Green, Blue).
+ *   - RGB_LED_2_O   : 3-bit control signal for RGB LED 2 (Red, Green, Blue).
+ */
 module RGB_controller (
         input  GCLK,  
         input  [3:0] alarm_state_in,  

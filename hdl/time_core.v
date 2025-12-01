@@ -1,5 +1,36 @@
 `timescale 1ns / 1ps
 
+/*
+ * Module: time_core
+ * -----------------
+ * Purpose:
+ *   The main time-keeping core of the clock.
+ *   Contains the counters for Seconds, Minutes, Hours, Days, and Months.
+ *   Increments time based on a 1Hz pulse from the `rategen` module.
+ *   Handles cascading carries (e.g., second -> minute -> hour -> day -> month).
+ *   Allows loading new time values (from manual setting or UART).
+ *   Outputs current time to the 7-segment display driver.
+ *
+ * Inputs:
+ *   - clk          : System clock.
+ *   - rst          : Reset signal.
+ *   - load_settings: Enable signal to load new time values.
+ *   - load_sec     : Second value to load.
+ *   - load_min     : Minute value to load.
+ *   - load_hour    : Hour value to load.
+ *   - load_day     : Day value to load.
+ *   - load_month   : Month value to load.
+ *
+ * Outputs:
+ *   - actual_month : Current month.
+ *   - actual_day   : Current day.
+ *   - actual_hour  : Current hour.
+ *   - actual_min   : Current minute.
+ *   - actual_sec   : Current second.
+ *   - segm         : 7-segment display segments.
+ *   - dign         : 7-segment display digits.
+ *   - led          : LED output.
+ */
 module time_core(
         input clk,
         input rst,
