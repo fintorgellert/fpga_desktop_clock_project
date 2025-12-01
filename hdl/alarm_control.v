@@ -46,6 +46,7 @@ module alarm_control(
     reg [3:0] alarm_state = ALARM_IDLE_MODE; 
     reg [3:0] set_state = ALARM_SET_HOURS;  
     
+    reg alm_set_done_flag;
     wire ent_wake_off_pulse;
         
     wire is_alarm_going_off_w;
@@ -64,8 +65,15 @@ module alarm_control(
 
     reg [5:0] display_min;
     reg [4:0] display_hour;
+    
+    // Edge detection
+    reg ent_prev, bstep_prev;
+    wire ent_pulse, bstep_pulse;
+    
+    assign ent_pulse = ent && ~ent_prev;
+    assign bstep_pulse = bstep && ~bstep_prev;
  
-    assign alm_set_done = (set_state == ALARM_SET_DONE); 
+    assign alm_set_done = alm_set_done_flag;
     assign is_alarm_going_off = (alarm_state == ALARM_WAKE_MODE);
     
     assign is_alarm_time = (alarm_state == ALARM_ACTIVE_MODE) &&
@@ -73,7 +81,7 @@ module alarm_control(
                            (actual_min == alm_min) &&
                            (actual_sec == 6'd0);
                            
-    assign ent_wake_off_pulse = (alarm_state == ALARM_WAKE_MODE) ? ent : 1'b0;
+    assign ent_wake_off_pulse = (alarm_state == ALARM_WAKE_MODE) ? ent_pulse : 1'b0;
     
     always @(posedge clk)
         begin 
@@ -83,82 +91,95 @@ module alarm_control(
                     alarm_state <= ALARM_IDLE_MODE;
                     alm_hour    <= 4'd0; 
                     alm_min     <= 6'd0;
+                    alm_set_done_flag <= 1'b0;
+                    ent_prev <= 1'b0;
+                    bstep_prev <= 1'b0;
                 end
-                
-            else if (is_alarm_time) begin
-                alarm_state <= ALARM_WAKE_MODE;
-            end
-            
-            else if (ent_wake_off_pulse) begin
-                alarm_state <= ALARM_IDLE_MODE;
-            end
-          
-            else if ((alarm_state == ALARM_IDLE_MODE) && ent) begin
-                alarm_state <= ALARM_SET_HOURS;
-                set_state   <= ALARM_SET_HOURS;
-            end
-            
-            else if (is_uart_set) begin
-                alm_hour <= uart_alarm_hour;
-                alm_min  <= uart_alarm_minute;
-                alarm_state <= ALARM_ACTIVE_MODE; 
-            end
-            
-            else begin
-                case (alarm_state)
+            else
+                begin
+                    // Store previous button states
+                    ent_prev <= ent;
+                    bstep_prev <= bstep;
                     
-                    ALARM_IDLE_MODE: begin
+                    // Always clear the done flag after one cycle
+                    alm_set_done_flag <= 1'b0;
+                    
+                    if (is_alarm_time) begin
+                        alarm_state <= ALARM_WAKE_MODE;
                     end
                     
-                    ALARM_SET_HOURS, ALARM_SET_MINUTES, ALARM_SET_DONE: begin
-                       
-                        if (ret) begin
-                            alarm_state <= ALARM_IDLE_MODE; 
-                            set_state   <= ALARM_SET_HOURS;
-                        end
-                        
-                        else if (bstep)
-                            begin
-                                case (set_state)
-                                    ALARM_SET_HOURS:   set_state <= ALARM_SET_HOURS;
-                                    ALARM_SET_MINUTES: set_state <= ALARM_SET_HOURS;
-                                    ALARM_SET_DONE:    set_state <= ALARM_SET_MINUTES;
-                                endcase 
+                    else if (ent_wake_off_pulse) begin
+                        alarm_state <= ALARM_IDLE_MODE;
+                    end
+                  
+                    else if ((alarm_state == ALARM_IDLE_MODE) && ent_pulse) begin
+                        alarm_state <= ALARM_SET_HOURS;
+                        set_state   <= ALARM_SET_HOURS;
+                    end
+                    
+                    else if (is_uart_set) begin
+                        alm_hour <= uart_alarm_hour;
+                        alm_min  <= uart_alarm_minute;
+                        alarm_state <= ALARM_ACTIVE_MODE; 
+                    end
+                    
+                    else begin
+                        case (alarm_state)
+                            
+                            ALARM_IDLE_MODE: begin
                             end
                             
-                        else if (ent)
-                            begin
-                                case (set_state)
-                                    ALARM_SET_HOURS: 
-                                        begin
-                                            alm_hour <= (sw[4:0] > 23) ? 23 : sw[4:0];
-                                            set_state <= ALARM_SET_MINUTES;
-                                        end
-                                    ALARM_SET_MINUTES:
-                                        begin
-                                            alm_min  <= (sw[5:0] > 59) ? 59 : sw[5:0];
-                                            set_state <= ALARM_SET_DONE;
-                                        end
-                                    ALARM_SET_DONE:
-                                        begin 
-                                            alarm_state <= ALARM_ACTIVE_MODE;
-                                            set_state   <= ALARM_SET_HOURS; 
-                                        end 
-                                endcase 
+                            ALARM_SET_HOURS, ALARM_SET_MINUTES, ALARM_SET_DONE: begin
+                               
+                                if (ret) begin
+                                    alarm_state <= ALARM_IDLE_MODE; 
+                                    set_state   <= ALARM_SET_HOURS;
+                                end
+                                
+                                else if (bstep_pulse)
+                                    begin
+                                        case (set_state)
+                                            ALARM_SET_HOURS:   set_state <= ALARM_SET_HOURS;
+                                            ALARM_SET_MINUTES: set_state <= ALARM_SET_HOURS;
+                                            ALARM_SET_DONE:    set_state <= ALARM_SET_MINUTES;
+                                        endcase 
+                                    end
+                                    
+                                else if (ent_pulse)
+                                    begin
+                                        case (set_state)
+                                            ALARM_SET_HOURS: 
+                                                begin
+                                                    alm_hour <= (sw[4:0] > 23) ? 23 : sw[4:0];
+                                                    set_state <= ALARM_SET_MINUTES;
+                                                end
+                                            ALARM_SET_MINUTES:
+                                                begin
+                                                    alm_min  <= (sw[5:0] > 59) ? 59 : sw[5:0];
+                                                    set_state <= ALARM_SET_DONE;
+                                                end
+                                            ALARM_SET_DONE:
+                                                begin 
+                                                    alarm_state <= ALARM_ACTIVE_MODE;
+                                                    set_state   <= ALARM_SET_HOURS;
+                                                    alm_set_done_flag <= 1'b1;
+                                                end 
+                                        endcase 
+                                    end
+                            end 
+                            
+                            ALARM_ACTIVE_MODE: begin
+                                if (ret)
+                                    alarm_state <= ALARM_IDLE_MODE;
                             end
-                    end 
-                    
-                    ALARM_ACTIVE_MODE: begin
-                        if (ret)
-                            alarm_state <= ALARM_IDLE_MODE;
+                            
+                            ALARM_WAKE_MODE: begin
+                            end
+                            
+                            default: alarm_state <= ALARM_IDLE_MODE;
+                        endcase
                     end
-                    
-                    ALARM_WAKE_MODE: begin
-                    end
-                    
-                    default: alarm_state <= ALARM_IDLE_MODE;
-                endcase
-            end
+                end
         end
         
         
