@@ -7,7 +7,7 @@
 set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports CLK100MHZ]
 create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_ports CLK100MHZ]
 
-##Switches
+## Switches
 
 set_property -dict {PACKAGE_PIN J15 IOSTANDARD LVCMOS33} [get_ports {SW[0]}]
 set_property -dict {PACKAGE_PIN L16 IOSTANDARD LVCMOS33} [get_ports {SW[1]}]
@@ -34,7 +34,7 @@ set_property -dict {PACKAGE_PIN R11 IOSTANDARD LVCMOS33} [get_ports {I_RGB_LED[1
 set_property -dict {PACKAGE_PIN N16 IOSTANDARD LVCMOS33} [get_ports {I_RGB_LED[2]}]
 
 
-##7 segment display
+## 7 segment display
 
 set_property -dict {PACKAGE_PIN T10 IOSTANDARD LVCMOS33} [get_ports {a_to_g[6]}]
 set_property -dict {PACKAGE_PIN R10 IOSTANDARD LVCMOS33} [get_ports {a_to_g[5]}]
@@ -56,7 +56,7 @@ set_property -dict {PACKAGE_PIN K2 IOSTANDARD LVCMOS33} [get_ports {an[6]}]
 set_property -dict {PACKAGE_PIN U13 IOSTANDARD LVCMOS33} [get_ports {an[7]}]
 
 
-##Buttons
+## Buttons
 
 set_property -dict {PACKAGE_PIN C12 IOSTANDARD LVCMOS33} [get_ports btn_rst]
 
@@ -67,7 +67,7 @@ set_property -dict {PACKAGE_PIN M18 IOSTANDARD LVCMOS33} [get_ports btn_set]
 set_property -dict {PACKAGE_PIN P18 IOSTANDARD LVCMOS33} [get_ports btn_bstep]
 
 
-##USB-RS232 Interface
+## USB-RS232 Interface
 
 set_property -dict {PACKAGE_PIN C4 IOSTANDARD LVCMOS33} [get_ports rx]
 set_property -dict {PACKAGE_PIN D4 IOSTANDARD LVCMOS33} [get_ports tx]
