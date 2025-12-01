@@ -1,26 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 03.10.2025 14:48:43
-// Design Name: 
-// Module Name: hex7seg
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
-
-// File: hex7seg.v
 module hex7seg(
     input [31:0] val,
     input cclk, rst,
@@ -28,7 +7,6 @@ module hex7seg(
     output [7:0] dig  // Digit Select (active high)
 );
 
-    // Számláló méret (18 bit) - 100MHz / 2^17 (kb. 763 Hz)
     reg [17:0] cnt; 
     
     always @(posedge cclk)  
@@ -42,12 +20,12 @@ module hex7seg(
     // Multiplexer select bitek
     assign mpx = cnt[17:15];
     
-    // Digit Select: 4'b0001-tõl váltogat (aktív high)
+    // Digit Select: 4'b0001
     assign dig = 8'b00000001 << mpx; 
 
     reg [3:0] digit;
     
-    // Multiplexer a kijelzendõ digit kiválasztására
+
     always @(*) 
         case(mpx)
             3'b000: digit = val[3:0];    // 0. digit (min_units)
@@ -64,14 +42,9 @@ module hex7seg(
     reg [7:0] disp;
     wire dp;
     
-    // DP bekapcsolva, ha a harmadik digit (hour_units, mpx=010) 
-    // vagy az hetedig digit (day_units, mpx=110) aktív.
-    // A seg[7] bitnek 0-nak kell lennie a DP bekapcsolásához (aktív alacsony).
     assign dp = ~(mpx == 3'b010 || mpx == 3'b110);
 
-    // 7-seg dekóder (Aktív-alacsony: 0 = ON, 1 = OFF)
-    // Bit sorrend: seg[6]=g, seg[5]=f, seg[4]=e, seg[3]=d, seg[2]=c, seg[1]=b, seg[0]=a
-    // a(0), b(1), c(2), d(3), e(4), f(5), g(6)
+    
     always @(*) 
         case(digit)
              // DP | g f e d c b a
@@ -88,7 +61,7 @@ module hex7seg(
             default: disp = 8'hFF; 
         endcase
 
-    // Segments output (aktiv-alacsony)
+    // Segments output
     assign seg = disp;
     
 endmodule
