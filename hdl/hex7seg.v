@@ -48,11 +48,11 @@ module hex7seg(
         case(mpx)
             3'b000: digit = val[3:0];    // 0. digit (min_units)
             3'b001: digit = val[7:4];    // 1. digit (min_tens) 
-            3'b010: digit = val[11:8];   // 2. digit (hour_units) - Itt kell a DP
+            3'b010: digit = val[11:8];   // 2. digit (hour_units) - DP needed here
             3'b011: digit = val[15:12];  // 3. digit (hour_tens)
             3'b100: digit = val[19:16];  // 4. digit (day_units)
             3'b101: digit = val[23:20];  // 5. digit (day_tens)  
-            3'b110: digit = val[27:24];  // 6. digit (month_units) - Itt kell a DP
+            3'b110: digit = val[27:24];  // 6. digit (month_units) - DP needed here
             3'b111: digit = val[31:28];  // 7. digit (month_tens)
         endcase
 
