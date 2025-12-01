@@ -1,16 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: Open Demo
-// Engineer: ChatGPT
-// 
-// Module Name: RGB_demo
-// Target Device: Nexys 4 DDR
-// Description:
-//   - Folyamatos, lágy színátmenet mindkét RGB LED-en
-//   - Nincs külsõ vezérlés, csak látvány
-//   - PWM-alapú fényerõszabályozás, színkör effekt
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module RGB_controller (
         input  GCLK,  
